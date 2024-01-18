@@ -1,0 +1,91 @@
+package com.example.touringapplication;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.example.touringapplication.Authentication.LoginPage;
+import com.example.touringapplication.MainUI.HomePage;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.play.core.integrity.IntegrityTokenRequest;
+
+public class MainActivity extends AppCompatActivity {
+DrawerLayout drawerLayout;
+NavigationView navigationView;
+Toolbar toolbar;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_main);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigationView);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.OpenDrawer, R.string.CloseDrawer);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if (id==R.id.optHome){
+                    loadFragment(new HomePage());
+                }else if(id == R.id.optProfile){
+
+                }
+                else if(id == R.id.optLogout){
+                    SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+                    String email = sharedPreferences.getString("email", null);
+                    String password = sharedPreferences.getString("password", null);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove(email);
+                    editor.remove(password);
+                    editor.clear();
+                    editor.apply();
+                    Intent obj= new Intent(MainActivity.this, LoginPage.class);
+                    startActivity(obj);
+
+                    Toast.makeText(MainActivity.this, "Log out", Toast.LENGTH_SHORT).show();
+
+                }
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+
+        }
+        else{
+            super.onBackPressed();
+        }
+    }
+
+    private void loadFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.container, fragment);
+    }
+}
