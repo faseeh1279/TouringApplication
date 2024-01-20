@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.touringapplication.Authentication.LoginPage;
 import com.example.touringapplication.MainUI.HomePage;
+import com.example.touringapplication.MainUI.Profile;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.play.core.integrity.IntegrityTokenRequest;
 
@@ -50,6 +51,9 @@ Toolbar toolbar;
                 int id = item.getItemId();
                 if (id==R.id.optHome){
                     loadFragment(new HomePage());
+                }
+                else if(id == R.id.optProfile){
+                    loadFragment(new Profile());
                 }
                 else if(id == R.id.optLogout){
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
