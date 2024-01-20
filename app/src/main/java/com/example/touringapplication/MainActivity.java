@@ -103,5 +103,6 @@ Toolbar toolbar;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.container, fragment);
+        fragmentTransaction.commit();
     }
 }
